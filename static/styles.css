@@ -1,8 +1,8 @@
 body {
-  background-color: #eeeeee;
+  background-color: #f32ab0;
   padding-left: 1em;
   padding-right: 1em;
-  margin-left: 90px;
+  margin-left: 9px;
   margin-right: 90px; }
 
 h1, h2, h3 {
@@ -26,13 +26,13 @@ nav ul {
     }
     nav ul li a {
       display: block;
-      color: white;
-      background-color: #324b79;
+      color: #f32ab0;
+      background-color: #000000;
       border-radius: 25px 50px 0px;
       padding: 1ex 2ex; }
     nav ul li a:hover {
-      color: #324b72;
-      background-color: white;
+      color: #000000;
+      background-color: #f32ab0;
     }
   nav img {
     float:left;
@@ -42,21 +42,21 @@ footer {
   padding: 0.1ex 2em;
   margin-top: 2em;
   border-top: solid 2px #FACC15;
-  background-color: #ecc8f0; }
+  background-color: #f32ab0; }
 
 .login {
   display: inline-block;
   float: right;
   width: 30%;
-  border: orange solid 2px;
+  border: rgb(0, 0, 0) solid 2px;
   padding: 1ex; }
   
 .odd {
-    background-color: orange;
+    background-color: rgb(255, 0, 0);
 }
 
 .even {
-    background-color: lightblue;
+    background-color: rgb(200, 203, 204);
 }
 
 

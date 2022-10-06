@@ -48,6 +48,6 @@ def text():
 
 <h1>Text</h1>
 
-<p>toto je text</p>
+<p>Toto je text</p>
 
 """

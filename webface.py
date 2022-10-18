@@ -39,7 +39,16 @@ def abc():
 
 @app.route("/kiwi/", methods=['GET', 'POST'])
 def kiwi():
-    return render_template("kiwi.html")
+    hmotnost = request.args.get('hmotnost')
+    vyska = request.args.get('vyska')
+    if hmotnost and vyska != None:
+        if hmotnost and vyska != 0:
+            bmi = int(hmotnost)/((int(vyska)/100)**2)
+        else:
+            bmi =0
+    else:
+        bmi =0
+    return render_template("kiwi.html", bmi=bmi)
 
 
 @app.route("/text/")

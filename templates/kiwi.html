@@ -4,13 +4,16 @@
 
 {% block obsah %}
 
+
 <h1>Kiwi</h1>
 
 <h2>formulář</h2>
-<form action="https://google.com/" method="POST">
-    <input type="text" name="q">
-    <input type="password" name="heslo">
-    <input type="submit" value="Odešli to">
+<form action="" method="GET">
+    Hmotnost:<br><input type="number" name="hmotnost" placeholder="hmotnost v Kg" >Kg <br>
+    Výška:<br><input type="number" name="vyska" placeholder="výška v cm">cm <br>
+    <input type="submit" value="Vypočítej">
+</form>
+<p>BMI={{bmi}}</p>
 
 
 <p><img src="{{url_for('static', filename='/kiwi.jpg') }}" /><p>

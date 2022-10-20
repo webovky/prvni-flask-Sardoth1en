@@ -42,12 +42,14 @@ def kiwi():
     hmotnost = request.args.get('hmotnost')
     vyska = request.args.get('vyska')
     if hmotnost and vyska != None:
-        if hmotnost and vyska != 0:
+        try:
             bmi = int(hmotnost)/((int(vyska)/100)**2)
-        else:
-            bmi =0
+        except ZeroDivisionError:
+            bmi =None
+        except ValueError:
+            bmi = None
     else:
-        bmi =0
+        bmi =None
     return render_template("kiwi.html", bmi=bmi)
 
 

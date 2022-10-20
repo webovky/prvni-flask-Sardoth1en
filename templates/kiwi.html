@@ -9,11 +9,30 @@
 
 <h2>formulář</h2>
 <form action="" method="GET">
-    Hmotnost:<br><input type="number" name="hmotnost" placeholder="hmotnost v Kg" >Kg <br>
-    Výška:<br><input type="number" name="vyska" placeholder="výška v cm">cm <br>
+    Hmotnost:<br><input type="text" name="hmotnost" placeholder="hmotnost v Kg" value ="{{request.args.get('hmotnost') or ''}}">Kg <br>
+    Výška:<br><input type="number" name="vyska" placeholder="výška v cm" value = "{{request.args.get('vyska') or ''}}">cm <br>
+
     <input type="submit" value="Vypočítej">
 </form>
-<p>BMI={{bmi}}</p>
+
+{% if bmi != None%}
+    <p>BMI={{bmi}}</p>
+    {% if bmi < 18.5%}
+    <p>Podváha</p>
+    {% elif bmi < 25%}
+    <p>Normální váha</p>
+    {% elif bmi < 30%}
+    <p>Nadváha</p>
+    {% elif bmi < 35%}
+    <p>	Mírná obezita</p>
+    {% elif bmi < 40%}
+    <p>Střední obezita</p>
+    {% elif bmi <= 40%}
+    <p>	Morbidní obezita</p>
+    {%endif%}
+{% else%}
+<p style="color:red"> Je třeba zadat dvě nenulová čísla!</p>
+{%endif%}
 
 
 <p><img src="{{url_for('static', filename='/kiwi.jpg') }}" /><p>

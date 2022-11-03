@@ -1,5 +1,5 @@
 from crypt import methods
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import functools
 
 # from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,6 +39,9 @@ def abc():
 
 @app.route("/kiwi/", methods=['GET', 'POST'])
 def kiwi():
+    if "uživatel" not in session:
+        flash("Nejsi přihlášen. Pro přístup k téhle stránce se prosím přihlas.")
+        return redirect(url_for("login"))
     hmotnost = request.args.get('hmotnost')
     vyska = request.args.get('vyska')
     if hmotnost and vyska != None:
@@ -51,6 +54,25 @@ def kiwi():
     else:
         bmi =None
     return render_template("kiwi.html", bmi=bmi)
+
+@app.route("/login/", methods=['GET', 'POST'])
+def login():
+    if request.method == "GET":
+        jmeno = request.args.get('jmeno')
+        heslo = request.args.get('heslo')
+        return render_template("login.html")
+    if request.method == "POST":
+        jmeno = request.form.get('jmeno')
+        heslo = request.form.get('heslo')
+        if jmeno== "David" and heslo== "webovky":
+            session["uživatel"]=jmeno
+
+        return redirect(url_for("login"))
+    
+@app.route("/logout/", methods=['GET', 'POST'])
+def logout():
+    session.pop("uživatel", None)
+    return redirect(url_for("login"))
 
 
 @app.route("/text/")

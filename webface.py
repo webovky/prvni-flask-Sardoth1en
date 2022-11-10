@@ -35,13 +35,16 @@ def info():
 
 @app.route("/abc/")
 def abc():
+    if "uživatel" not in session:
+        flash("Nejsi přihlášen. Pro přístup k téhle stránce se prosím přihlas.","error")
+        return redirect(url_for("login", page=request.full_path))
     return render_template("abc.html", slova=slova)
 
 @app.route("/kiwi/", methods=['GET', 'POST'])
 def kiwi():
     if "uživatel" not in session:
-        flash("Nejsi přihlášen. Pro přístup k téhle stránce se prosím přihlas.")
-        return redirect(url_for("login"))
+        flash("Nejsi přihlášen. Pro přístup k téhle stránce se prosím přihlas.","error")
+        return redirect(url_for("login", page=request.full_path))
     hmotnost = request.args.get('hmotnost')
     vyska = request.args.get('vyska')
     if hmotnost and vyska != None:
@@ -64,9 +67,16 @@ def login():
     if request.method == "POST":
         jmeno = request.form.get('jmeno')
         heslo = request.form.get('heslo')
+        page = request.args.get("page")
         if jmeno== "David" and heslo== "webovky":
+            flash("Jsi přihlášen!","message")
             session["uživatel"]=jmeno
-
+            if page:
+                return redirect(page)
+        else:
+            flash("Nesprávné heslo!","message")
+        if page:
+            return redirect(url_for("login", page=page))
         return redirect(url_for("login"))
     
 @app.route("/logout/", methods=['GET', 'POST'])

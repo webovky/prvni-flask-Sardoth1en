@@ -10,6 +10,8 @@ app.secret_key = b"x6\x87j@\xd3\x88\x0e8\xe8pM\x13\r\xafa\x8b\xdbp\x8a\x1f\xd41\
 
 
 slova = ("Super", "Perfekt", "Úža", "Flask")
+ 
+import sqlite3
 
 
 def prihlasit(function):
@@ -63,11 +65,26 @@ def login():
     if request.method == "GET":
         jmeno = request.args.get('jmeno')
         heslo = request.args.get('heslo')
+        
+        
         return render_template("login.html")
     if request.method == "POST":
         jmeno = request.form.get('jmeno')
         heslo = request.form.get('heslo')
         page = request.args.get("page")
+
+        conn= sqlite3.connect('data.db')
+        cur = conn.cursor()
+        cur.execute('SELECT passwd FROM user WHERE login = ?',[jmeno])
+        ans = cur.fetchall()
+        
+        if ans and ans[0][0]==heslo:
+            flash("Jsi přihlášen!","message")
+            session["uživatel"]=jmeno
+            if page:
+                return redirect(page)
+
+        """
         if jmeno== "David" and heslo== "webovky":
             flash("Jsi přihlášen!","message")
             session["uživatel"]=jmeno
@@ -75,6 +92,7 @@ def login():
                 return redirect(page)
         else:
             flash("Nesprávné heslo!","message")
+            """
         if page:
             return redirect(url_for("login", page=page))
         return redirect(url_for("login"))

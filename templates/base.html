@@ -24,11 +24,12 @@
   Hrůze nesji přihlášen!!!
 {% endif %}
 </p>
-
+<div = "flash_parent">
 {% for category,message in get_flashed_messages(with_categories=true) %}
+
 <p class="flash {{ category }}"><button class ="hide">X</button>{{message}}</p>
 {% endfor %}
-
+</div>
   <nav>
   <p><img src="{{ url_for('static', filename='flask-icon.png') }}" /></p>
   <ul>
@@ -38,6 +39,7 @@
     <li><a href="{{ url_for('kiwi') }}">kiwi</a></li>
     <li><a href="{{ url_for('login') }}">login</a></li>
     <li><a href="{{ url_for('logout') }}">logout</a></li>
+    <li><a href="{{ url_for('registrace') }}">registrace</a></li>
   </ul></nav>
 
 

@@ -1,7 +1,9 @@
 from crypt import methods
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import functools
-
+from mysqlite import SQLite
+from werkzeug.security import generate_password_hash,check_password_hash
+import sqlite3
 # from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -11,7 +13,7 @@ app.secret_key = b"x6\x87j@\xd3\x88\x0e8\xe8pM\x13\r\xafa\x8b\xdbp\x8a\x1f\xd41\
 
 slova = ("Super", "Perfekt", "Úža", "Flask")
  
-import sqlite3
+
 
 
 def prihlasit(function):
@@ -72,15 +74,15 @@ def login():
         jmeno = request.form.get('jmeno')
         heslo = request.form.get('heslo')
         page = request.args.get("page")
-
-        conn= sqlite3.connect('data.db')
-        cur = conn.cursor()
-        cur.execute('SELECT passwd FROM user WHERE login = ?',[jmeno])
-        ans = cur.fetchall()
+        with SQLite('data.db') as cur:
+            cur.execute('SELECT passwd FROM user WHERE login = ?',[jmeno])
+            ans = cur.fetchall()
         
-        if ans and ans[0][0]==heslo:
+        if ans and check_password_hash(ans[0][0],heslo):
             flash("Jsi přihlášen!","message")
             session["uživatel"]=jmeno
+        else:
+            flash("Nesprávné heslo!","message")
             if page:
                 return redirect(page)
 
@@ -91,12 +93,41 @@ def login():
             if page:
                 return redirect(page)
         else:
-            flash("Nesprávné heslo!","message")
-            """
+            flash("Nesprávné heslo!","message")"""
+            
         if page:
             return redirect(url_for("login", page=page))
         return redirect(url_for("login"))
+@app.route("/registrace/", methods=['GET', 'POST'])
+def registrace():
     
+    if request.method == "GET":
+        return render_template("registrace.html")
+
+    if request.method == "POST":
+        jmeno = request.form.get('jmeno')
+        heslo = request.form.get('heslo')
+        heslo2 = request.form.get('heslo_znovu')
+        if not (jmeno and heslo2 and heslo): 
+            flash("Není vše vyplněno!","message")
+            return redirect(url_for("registrace"))
+        if heslo != heslo2:
+            flash("Hesla se neshodují!","message")
+            return redirect(url_for("registrace"))
+        try:
+            with SQLite('data.db') as cur:
+                cur.execute('INSERT INTO user (login,passwd) VALUES (?,?)',[jmeno,generate_password_hash(heslo)])
+                cur.execute('SELECT passwd FROM user WHERE login = ?',[jmeno])
+                flash("Jsi registrován!","message")
+                flash("Jsi přihlášen!","message")
+                session["uživatel"]=jmeno
+                return redirect(url_for("index"))
+        except sqlite3.IntegrityError:
+            flash("Jméno již existuje!","message")
+            return redirect(url_for("registrace"))
+    
+    return redirect(url_for("registrace"))  
+
 @app.route("/logout/", methods=['GET', 'POST'])
 def logout():
     session.pop("uživatel", None)

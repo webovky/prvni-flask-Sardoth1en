@@ -4,6 +4,8 @@ import functools
 from mysqlite import SQLite
 from werkzeug.security import generate_password_hash,check_password_hash
 import sqlite3
+import random
+import string
 # from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -61,6 +63,22 @@ def kiwi():
     else:
         bmi =None
     return render_template("kiwi.html", bmi=bmi)
+
+@app.route("/zkracovac/", methods=['GET', 'POST'])
+def zkracovac():
+    if request.method == "GET":
+        return render_template("zkracovac.html")
+
+    if request.method == "POST":
+        url = request.form.get('url')
+        zkratka = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+        with SQLite('data.db') as cur:
+            cur.execute('INSERT INTO adresy (zkratka,url) VALUES (?,?)',[zkratka,url])
+            
+
+        return redirect(url_for("zkracovac"))
+
+
 
 @app.route("/login/", methods=['GET', 'POST'])
 def login():

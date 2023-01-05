@@ -82,5 +82,9 @@ footer {
     background-color: rgb(200, 203, 204);
 }
 
+.url input{
+    width: 80%;
+    font-size: 170%;
+}
 
 /*# sourceMappingURL=styles.css.map */

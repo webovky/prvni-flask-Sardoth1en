@@ -17,13 +17,30 @@
 <body>
 <a href="https://github.com/spseol/flask-start-onefile/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 
+<p class="login">
+{% if "uživatel" in session %}
+  Jsi přihlášen jako {{ session["uživatel"]}}!
+{% else %}
+  Hrůze nesji přihlášen!!!
+{% endif %}
+</p>
+<div = "flash_parent">
+{% for category,message in get_flashed_messages(with_categories=true) %}
 
+<p class="flash {{ category }}"><button class ="hide">X</button>{{message}}</p>
+{% endfor %}
+</div>
   <nav>
   <p><img src="{{ url_for('static', filename='flask-icon.png') }}" /></p>
   <ul>
     <li><a href="{{ url_for('index') }}">Index</a></li>
     <li><a href="{{ url_for('info') }}">Info</a></li>
     <li><a href="{{ url_for('abc') }}">ABC</a></li>
+    <li><a href="{{ url_for('kiwi') }}">kiwi</a></li>
+    <li><a href="{{ url_for('zkracovac') }}">zkracovač</a></li>
+    <li><a href="{{ url_for('login') }}">login</a></li>
+    <li><a href="{{ url_for('logout') }}">logout</a></li>
+    <li><a href="{{ url_for('registrace') }}">registrace</a></li>
   </ul></nav>
 
 
@@ -58,7 +75,20 @@ Užitečné odkazy:
 </footer>
 
 
+<script>
+function hide(){
+  this.parentElement.style.display= "none";
+}
+var tlacitko=document.getElementsByClassName("hide")
+for (var i=0; i<tlacitko.length; i++){
+  tlacitko[i].onclick=hide
+}
 
+
+
+document.getElementsByClassName("hide").onclick = hide
+
+</script>
 
 </body>
 </html>

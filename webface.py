@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 import sqlite3
 import random
 import string
+import re
 # from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -67,16 +68,46 @@ def kiwi():
 @app.route("/zkracovac/", methods=['GET', 'POST'])
 def zkracovac():
     if request.method == "GET":
-        return render_template("zkracovac.html")
+        if "uživatel" in session:
+            with SQLite('data.db') as cur:
+                res = cur.execute("SELECT zkrtaka, url FROM adresy WHERE user=?",[session["uživatel"]] )
+                zkratky = res.fetchall()
+                if not zkratky:
+                    zkratky = []
+        else:
+            zkratky = []
+        return render_template("zkracovac.html",zkratky=zkratky)
 
     if request.method == "POST":
         url = request.form.get('url')
-        zkratka = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-        with SQLite('data.db') as cur:
-            cur.execute('INSERT INTO adresy (zkratka,url) VALUES (?,?)',[zkratka,url])
+        if url and re.match("https?://.+", url):
             
+            zkratka = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+            with SQLite('data.db') as cur:
+                if "uživatel" in session:
+                    cur.execute('INSERT INTO adresy (zkratka,url,user) VALUES (?,?,?)',[zkratka,url,session["uživatel"]])
+                else:
+                    cur.execute('INSERT INTO adresy (zkratka,url) VALUES (?,?)',[zkratka,url])
+                flash("Adresa uložena")
+                return redirect(url_for("zkracovac", new = zkratka))
+        else:
+            flash("To co jsi zadal není adresa webu")
 
         return redirect(url_for("zkracovac"))
+
+@app.route("/zkracovac/<zkratka>", methods=['GET'])
+def dezkracovac(zkratka):
+    with SQLite('data.db') as cur:
+        
+        res = cur.execute("SELECT url from adresy WHERE zkratka=?", [zkratka])
+        odpoved = res.fetchone()
+        if odpoved:
+            return redirect(odpoved[0])
+        else:
+            flash("To co jsi zadal není zkratka webu")
+            return redirect(url_for("zkracovac"))
+
+    return redirect(url_for("zkracovac"))
 
 
 
@@ -120,6 +151,7 @@ def login():
 def registrace():
     
     if request.method == "GET":
+        new = request.args.get("new")
         return render_template("registrace.html")
 
     if request.method == "POST":

@@ -68,15 +68,16 @@ def kiwi():
 @app.route("/zkracovac/", methods=['GET', 'POST'])
 def zkracovac():
     if request.method == "GET":
+        new = request.args.get("new")
         if "uživatel" in session:
             with SQLite('data.db') as cur:
-                res = cur.execute("SELECT zkrtaka, url FROM adresy WHERE user=?",[session["uživatel"]] )
+                res = cur.execute("SELECT zkratka, url FROM adresy WHERE user=?",[session["uživatel"]] )
                 zkratky = res.fetchall()
                 if not zkratky:
                     zkratky = []
         else:
             zkratky = []
-        return render_template("zkracovac.html",zkratky=zkratky)
+        return render_template("zkracovac.html",new=new,zkratky=zkratky)
 
     if request.method == "POST":
         url = request.form.get('url')

@@ -6,7 +6,7 @@
 
 <h1>Zkracovač URL</h1>
 
-{% if  new%}
+{% if  new %}
 <p>Vytvořená nová zkratka: <a href="{{ new }}">{{ new }}</a></p>
 
 {% endif %}
@@ -19,5 +19,13 @@
     </p>
 </form>
 
+
+<h2>Seznam uložený skratek</h2>
+<ul>
+{% for zkratka,url in zkratky %}
+<li><a href="{{url_for('dezkracovac',zkratka=zkratka)}}">{{zkratka}}</a> <a href="{{url}}">{{url}}</a></li>
+
+{% endfor %}
+</ul>
 
 {% endblock obsah %}
